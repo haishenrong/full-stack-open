@@ -1,5 +1,44 @@
 import React from 'react'
 
+function Header(props) {
+  return(
+    <div>
+        <p>
+          {props.course}
+        </p>
+    </div>
+  )
+}
+
+function Content(props) {
+  return(
+    <div>
+      <Part part = {props.part1} excersises = {props.exercises1} />
+      <Part part = {props.part2} excersises = {props.exercises2} />
+      <Part part = {props.part3} excersises = {props.exercises3} />
+    </div>
+  )
+}
+
+function Part(props) {
+  return(
+    <div>
+        <p>
+        <p>Number of exercises {props.part + props.exercises}</p>
+        </p>
+    </div>
+  )
+}
+
+function Total(props) {
+  return(
+    <div>
+        <p>
+        <p>Number of exercises {props.exercises1 + props.exercises2 + props.exercises3}</p>
+        </p>
+    </div>
+  )
+}
 
 function App() {
 
@@ -13,17 +52,10 @@ function App() {
 
   return (
     <div className="App">
-      <h1>{course}</h1>
-      <p>
-        {part1} {exercises1}
-      </p>
-      <p>
-        {part2} {exercises2}
-      </p>
-      <p>
-        {part3} {exercises3}
-      </p>
-      <p>Number of exercises {exercises1 + exercises2 + exercises3}</p>
+      <Header course = {course} />
+      <Content part1 = {part1} part2 = {part2} part3 = {part3}
+      exercises1 = {exercises1} exercises2 = {exercises2} exercises3 = {exercises3}/>
+      <Total exercises1 = {exercises1} exercises2 = {exercises2} exercises3 = {exercises3} />
     </div>
   );
 }
