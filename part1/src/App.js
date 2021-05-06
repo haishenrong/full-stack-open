@@ -1,52 +1,63 @@
-import logo from './logo.svg';
 import './App.css';
+import React, {useState} from 'react';
 
-function Hello(props) {
-  const now = new Date();
+const History = (props) => {
+  if (props.allClicks.length === 0) {
+    return (
+      <div>
+        the app is used by pressing the buttons
+      </div>
+    )
+  }
   return (
     <div>
-        <p>Hello world, it is {now.toString()}</p>
-        <p>
-          Hello {props.name}, you are {props.bla}
-        </p>
+      button press history: {props.allClicks.join(' ')}
     </div>
   )
 }
+const Display = props => <div>{props.value}</div>
 
-function Footer() {
-  return (
-    <>
-      <a href="https://github.com/haishenrong/">HSR</a>
-    </>
-  )
+const Button = (props) => (
+  <button onClick={props.handleClick}>
+    {props.text}
+  </button>
+)
+
+const App = () => {
+  const [left, setLeft] = useState(0)
+  const [right, setRight] = useState(0)
+  const [allClicks, setAll] = useState([])
+  const [value, setValue] = useState(10)
+
+  const handleLeftClick = () => {
+    setAll(allClicks.concat('L'))
+    setLeft(left + 1)
+    setValue(value + 1)
+  }
+
+  const handleRightClick = () => {
+    setAll(allClicks.concat('R'))
+    setRight(right + 1)
+    setValue(value + 1)
+  }
+  const handleClick = () =>{
+  console.log('clicked the button')
+  setValue(0)
 }
 
-function App() {
-  console.log('Hello from component');
-  const name = 'Peter'
-  const age = 10
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <Hello name = "George" bla = {26+10}/>
-        <Hello name = {name} bla = {age}/>
-        <Footer />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
 
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+  return (
+    <div>
+      <Display value = {value}/>
+      {left}
+      <Button handleClick={handleLeftClick} text='left' />
+      <Button handleClick={handleRightClick} text='right' />
+      {right}
+      <History allClicks = {allClicks} />
+      {value}
+      <button onClick={handleClick}>button</button>
     </div>
-  );
+  )
 }
 
 export default App;
