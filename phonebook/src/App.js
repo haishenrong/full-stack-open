@@ -50,11 +50,33 @@ const Filter = ({newFilter, handleFilterChange}) => {
   )
 }
 
+const Notification = ({ message, errorMessage }) => {
+  if (message === null && errorMessage ===null) {
+    return null
+  }
+  else if(errorMessage === null) {
+    return (
+      <div className="confirmation">
+        {message}
+      </div>
+    )
+  }
+  else {
+    return (
+      <div className="error">
+        {errorMessage}
+      </div>
+    )
+  }
+}
+
 const App = () => {
   const [ persons, setPersons] = useState([])
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber ] = useState('')
   const [ newFilter, setNewFilter ] = useState('')
+  const [ confirm, setNewConfirm ] = useState(null)
+  const [errorMessage, setErrorMessage] = useState(null)
   
   useEffect(() => {
     personService
@@ -80,11 +102,12 @@ const App = () => {
     let numbers = persons.map(person => person.number)
     let ids = persons.map(person => person.id)
     let id = 1;
-    while(id<=ids.length && id === ids[id-1]){ id++ }
+    while(id<=ids.length && ids.includes(id)){ id++ }
+    console.log(persons.length+1, id)
     if(names.includes(newName))
     {
       if( window.confirm("The name \"" + newName + "\" already exists in the phonebook, replace the old number with a new one?")){
-        const personObject = persons.find(person => person.name == newName)
+        const personObject = persons.find(person => person.name === newName)
         const changedPerson = { ...personObject, number:newNumber}
         personService
           .update(changedPerson.id,changedPerson)
@@ -92,6 +115,12 @@ const App = () => {
             setPersons(persons.map(person => person.id !== changedPerson.id ? person : updatedPerson))
           }
         )
+        setNewConfirm(
+          ` Changed phone number of '${newName}' to '${newNumber}'`
+        )
+        setTimeout(() => {
+          setNewConfirm(null)
+        }, 5000)
       }
     }
     else if(numbers.includes(newNumber))
@@ -105,6 +134,12 @@ const App = () => {
             setPersons(persons.map(person => person.id !== changedPerson.id ? person : updatedPerson))
           }
         )
+        setNewConfirm(
+          ` Changed name of '${newNumber}' to '${newName}'`
+        )
+        setTimeout(() => {
+          setNewConfirm(null)
+        }, 5000)
       }
     }
     else{
@@ -120,22 +155,40 @@ const App = () => {
           setNewName('')
           setNewNumber('')
         })
+      setNewConfirm(
+        ` Added '${newName}`
+      )
+      setTimeout(() => {
+        setNewConfirm(null)
+      }, 5000)
     }
+    setNewName('')
+    setNewNumber('')
   }
   
   const deletePerson = (id) => { 
+    const identifiedPerson = persons.find(p => p.id === id)
     personService
     .deletePerson(id)
     .then(resultPersons => {
-      console.log(resultPersons)
       const filteredPersons = persons.filter(person => person.id !== id);
       setPersons(filteredPersons)
+    })
+    .catch(error => {
+      setErrorMessage(
+        `Information of '${identifiedPerson.name}' has already been removed from server`
+      )
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
+      setPersons(persons.filter(p => p.id !== id))
     })
   }
 
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={confirm} errorMessage={errorMessage} />
         <Filter
         newFilter = {newFilter}
         handleFilterChange={handleFilterChange}
