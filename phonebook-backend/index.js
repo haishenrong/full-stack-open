@@ -3,13 +3,6 @@ const app = express()
 
 app.use(express.json())
 
-const generateId = () => {
-    const maxId = persons.length > 0
-      ? Math.max(...persons.map(p => p.id))
-      : 0
-    return maxId + 1
-  }
-
 let persons = [
     {
       id: 1,
@@ -38,8 +31,20 @@ let persons = [
     }
 ]
 
-app.get('/', (request, response) => {
-  response.send('<h1>Phonebook</h1>')
+
+const generateId = () => {
+  let nextId = Math.floor(Math.random()*1000000)+5
+  while(persons.map(p => p.id).includes(nextId))
+  {
+    nextId++;
+  }
+  return nextId
+}
+
+app.get('/info', (request, response) => {
+  response.send(
+    `<div> Phonebook has info for ${persons.length} people</div>
+    <div>${new Date}</div>`)
 })
 
 app.get('/api/persons', (request, response) => {
@@ -63,6 +68,13 @@ app.post('/api/persons', (request, response) => {
   if (!body.name || !body.number) {
     return response.status(400).json({ 
       error: 'name or number missing' 
+    })
+  }
+
+  if(persons.map(p => p.name).includes(body.name))
+  {
+    return response.status(400).json({ 
+      error: 'name already exists' 
     })
   }
 
