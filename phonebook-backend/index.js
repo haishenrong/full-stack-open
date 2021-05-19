@@ -1,7 +1,17 @@
 const express = require('express')
+var morgan = require('morgan')
 const app = express()
 
+
 app.use(express.json())
+//app.use(assignPerson)
+morgan.token("postPerson", function (req, res) {
+  return JSON.stringify({
+    "name": req.body.name,
+    "number": req.body.number
+  })
+})
+app.use(morgan(':method :url :response-time :postPerson'))
 
 let persons = [
     {
@@ -40,6 +50,8 @@ const generateId = () => {
   }
   return nextId
 }
+
+
 
 app.get('/info', (request, response) => {
   response.send(
@@ -85,7 +97,6 @@ app.post('/api/persons', (request, response) => {
   }
 
   persons = persons.concat(person)
-    
   response.json(person)
 })
 
@@ -95,6 +106,9 @@ app.delete('/api/persons/:id', (request, response) => {
 
   response.status(204).end()
 })
+
+
+//app.use(assignPerson)
 
 const PORT = 3001
 app.listen(PORT, () => {
