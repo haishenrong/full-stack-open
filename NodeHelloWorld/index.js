@@ -2,8 +2,10 @@ const express = require('express')
 const app = express()
 const cors = require('cors')
 
+// Allows external connections
 app.use(cors())
-
+// Express shows static content
+app.use(express.static('build'))
 app.use(express.json())
 
 const requestLogger = (request, response, next) => {
