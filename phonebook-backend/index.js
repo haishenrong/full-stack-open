@@ -3,9 +3,12 @@ var morgan = require('morgan')
 const app = express()
 const cors = require('cors')
 
+// Lets frontend in
 app.use(cors())
+// Using production build copied from frontend
+app.use(express.static('build'))
 app.use(express.json())
-//app.use(assignPerson)
+
 morgan.token("postPerson", function (req, res) {
   return JSON.stringify({
     "name": req.body.name,
@@ -111,7 +114,7 @@ app.delete('/api/persons/:id', (request, response) => {
 
 //app.use(assignPerson)
 
-const PORT = 3001
+const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
