@@ -8,3 +8,13 @@ Content-Type: application/json
     "content": "VS Code REST Client is pre",
     "important": false
 }
+###
+PUT http://localhost:3001/api/notes/60a94454480f3c4cb0595933
+Content-Type: application/json
+{
+    "content": "VS CODEEEEE",
+    "important": true
+}
+
+###
+DELETE http://localhost:3001/api/notes/60a95ab3ead89e36cc0e8367
