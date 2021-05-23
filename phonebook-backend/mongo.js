@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-if (process.argv.length === 4 || process.argv.length < 3) {
+if (process.argv.length === 4 || process.argv.length < 3 || process.argv.length > 5) {
   console.log('Please provide the password as an argument for displaying entries: node mongo.js <password>')
   console.log('Please provide the name and number of the person you are adding: node mongo.js <password> <name> <person>')
   process.exit(1)

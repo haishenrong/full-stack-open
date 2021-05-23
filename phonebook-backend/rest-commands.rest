@@ -5,7 +5,7 @@ GET http://localhost:3001/api/persons/
 GET http://localhost:3001/info/
 
 ###
-GET http://localhost:3001/api/persons/3
+GET http://localhost:3001/api/persons/60aa72ad70be903c24edf933
 
 ###
 POST http://localhost:3001/api/persons
@@ -17,5 +17,14 @@ Content-Type: application/json
 }
 
 ###
-DELETE http://localhost:3001/api/persons/3
+DELETE http://localhost:3001/api/persons/60aa722d70be903c24edf932
 Content-Type: application/json
+
+###
+PUT http://localhost:3001/api/persons/60aa712ec58917247cfa6f00
+Content-Type: application/json
+
+{
+    "name": "Bob the builder",
+    "number": "nana"
+}
