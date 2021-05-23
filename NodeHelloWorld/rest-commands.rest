@@ -9,12 +9,13 @@ Content-Type: application/json
     "important": false
 }
 ###
-PUT http://localhost:3001/api/notes/60a94454480f3c4cb0595933
+PUT http://localhost:3001/api/notes/60a943e1480f3c4cb0595932
 Content-Type: application/json
+
 {
     "content": "VS CODEEEEE",
     "important": true
 }
 
 ###
-DELETE http://localhost:3001/api/notes/60a95ab3ead89e36cc0e8367
+DELETE http://localhost:3001/api/notes/60a95acbead89e36cc0e8368
