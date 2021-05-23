@@ -12,12 +12,12 @@ POST http://localhost:3001/api/persons
 Content-Type: application/json
 
 {
-    "name": "Bob the builder",
+    "name": "Hana Kim",
     "number": "32-47-1238243"
 }
 
 ###
-DELETE http://localhost:3001/api/persons/60aa722d70be903c24edf932
+DELETE http://localhost:3001/api/persons/60aabc5ad8d9bf256c627e46
 Content-Type: application/json
 
 ###
