@@ -108,6 +108,46 @@ test('blog without name or url returns 400', async () => {
     .expect(400)
 })
 
+test('deleted blog returns 204', async () => {
+  const initialBlogs = await helper.blogsInDb()
+  const blogToDelete= initialBlogs[0]
+
+  await api
+    .delete(`/api/blogs/${blogToDelete.id}`)
+    .expect(204)
+
+  const missingOneBlog = await helper.blogsInDb()
+  expect(missingOneBlog).toHaveLength(initialBlogs.length-1)
+
+  const titleCheck = missingOneBlog.map(blog => blog.title)
+  expect(titleCheck).not.toContain(blogToDelete.title)
+})
+
+test('update blog likes sucessful', async () => {
+  const updateBlog =  {
+    title: 'Bobs Emporium',
+    author: 'Bob the builder',
+    url: 'canwedoit.org',
+    likes: 392
+  }
+  const currBlogs = await helper.blogsInDb()
+  const targetBlog = currBlogs.find(blog => blog.title === updateBlog.title)
+
+  await api.
+    put(`/api/blogs/${targetBlog.id}`)
+    .send(updateBlog)
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
+
+  const updatedDb = await helper.blogsInDb()
+  expect(updatedDb).toHaveLength(currBlogs.length)
+
+  const blogLikes = updatedDb.map(blog => blog.likes)
+
+  expect(blogLikes).not.toContain(364)
+  expect(blogLikes).toContain(392)
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })

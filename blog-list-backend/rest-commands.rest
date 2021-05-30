@@ -11,13 +11,15 @@ Content-Type: application/json
     "likes": 34
 }
 ###
-PUT http://localhost:3001/api/notes/60a943e1480f3c4cb0595932
+PUT http://localhost:3003/api/blogs/60b3c8d4c6d7582d90c98160
 Content-Type: application/json
 
 {
-    "content": "VS CODEEEEE",
-    "important": true
+    "title": "First Blog",
+    "author": "Arto Hellas",
+    "url": "blogspot.com/aHellas234",
+    "likes": 35
 }
 
 ###
-DELETE http://localhost:3001/api/notes/60a95acbead89e36cc0e8368
+DELETE http://localhost:3003/api/blogs/60ac1203e6a4a640fc41e828
