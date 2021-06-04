@@ -5,10 +5,11 @@ POST http://localhost:3003/api/blogs/
 Content-Type: application/json
 
 {
-    "title": "First Blog",
+    "title": "Next Blog",
     "author": "Arto Hellas",
     "url": "blogspot.com/aHellas234",
-    "likes": 34
+    "likes": 325,
+    "userId": "60b973732d15c737fc1a9b85"
 }
 ###
 PUT http://localhost:3003/api/blogs/60b3c8d4c6d7582d90c98160
@@ -23,3 +24,17 @@ Content-Type: application/json
 
 ###
 DELETE http://localhost:3003/api/blogs/60ac1203e6a4a640fc41e828
+###
+
+GET http://localhost:3003/api/users/
+
+###
+POST http://localhost:3003/api/users
+Content-Type: application/json
+
+{
+    "blogs": [],
+    "username": "root",
+    "name": "Superuser",
+    "password": "salainen"
+}
