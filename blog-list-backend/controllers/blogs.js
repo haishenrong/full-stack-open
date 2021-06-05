@@ -1,6 +1,10 @@
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
 const User = require('../models/user')
+const jwt = require('jsonwebtoken')
+const middleware = require('../utils/middleware')
+const userExtractor = middleware.userExtractor
+
 
 blogsRouter.get('/', async (request, response) => {
   const blogs = await Blog.find({})
@@ -8,8 +12,9 @@ blogsRouter.get('/', async (request, response) => {
   response.json(blogs)
 })
 
-blogsRouter.post('/', async (request, response, next) => {
+blogsRouter.post('/', userExtractor, async (request, response, next) => {
   const body = request.body
+  const user = request.user
 
   if (body.title === undefined || body.url === undefined) {
     return response.status(400).json({
@@ -18,8 +23,6 @@ blogsRouter.post('/', async (request, response, next) => {
   }
   if(!body.likes){ body.likes = 0 }
 
-  const user = await User.findById(body.userId)
-  console.log(body.userId)
   const blog = new Blog({
     title: body.title,
     author: body.author,
@@ -35,7 +38,12 @@ blogsRouter.post('/', async (request, response, next) => {
   response.json(savedBlog)
 })
 
-blogsRouter.delete('/:id', async (request, response, next) => {
+blogsRouter.delete('/:id', userExtractor, async (request, response, next) => {
+  const user = request.user
+
+  user.blogs = user.blogs.filter(blog => blog._id !== request.params.id)
+  await user.save()
+
   await Blog.findByIdAndRemove(request.params.id)
   response.status(204).end()
 })

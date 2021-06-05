@@ -11,6 +11,7 @@ const api = supertest(app)
 
 describe('blog testing is separate from user testing', () => {
   beforeEach(async () => {
+    await User.deleteMany({})
     await Blog.deleteMany({})
     const noteObjects = helper.initialBlogs
       .map(blog => new Blog(blog))
@@ -33,16 +34,39 @@ describe('blog testing is separate from user testing', () => {
     })
   })
 
-  test('post works properly', async () => {
+  test('post works properly with user creation', async () => {
+    const newUser = {
+      blogs: [],
+      username: 'hihi',
+      name: 'Hilda',
+      password: 'otf'
+    }
+    const loginInfo = {
+      username: 'hihi',
+      password: 'otf'
+    }
+    await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+
+    const loginBody = await api
+      .post('/api/login')
+      .send(loginInfo)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+    //need a login token
     const newBlog = {
       title: 'The next blog',
       author: 'The next author',
       url: 'thenexturl.com',
-      likes: 1
+      likes: 1,
+      userId: User.find({ username: 'hihi' }).id
     }
-
     await api
       .post('/api/blogs')
+      .set('Authorization',`Bearer ${loginBody.body.token}`)
       .send(newBlog)
       .expect(200)
       .expect('Content-Type', /application\/json/)
