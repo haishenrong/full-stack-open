@@ -16,3 +16,10 @@
     padding: 10px;
     margin-bottom: 10px;
   }
+.blogStyle {
+    color: rgb(0, 92, 128);
+    background: lightseagreen;
+    border-style: solid;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}

@@ -36,9 +36,9 @@ Content-Type: application/json
 
 {
     "blogs": [],
-    "username": "root",
-    "name": "Superuser",
-    "password": "salainen"
+    "username": "ElBarto",
+    "name": "Bart Simpson",
+    "password": "cowabunga"
 }
 
 ###

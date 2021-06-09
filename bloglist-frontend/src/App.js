@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import loginService from './services/login'
 import blogService from './services/blogs'
+import Togglable from './components/Togglable'
+import BlogForm from './components/BlogForm'
 
 const Notification = ({ confirm, message }) => {
   if (confirm === null && message === null) {
@@ -30,9 +32,7 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
+  const [order, setOrder] = useState('most likes')
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -75,28 +75,30 @@ const App = () => {
     }
   }
 
-  const addBlog = (event) => {
-    event.preventDefault()
-    const blogObject = {
-      title: title,
-      author: author,
-      url: url,
-    }
-
+  const addBlog = (blogObject) => {
+    blogFormRef.current.toggleVisibility()
     blogService
     .create(blogObject)
     .then(nextBlog => {
       setBlogs(blogs.concat(nextBlog))
-      setTitle('')
-      setAuthor('')
-      setUrl('')
-    })
-    setConfirm(`a new blog ${title} by ${author}`)
+      setConfirm(`a new blog ${nextBlog.title} by ${nextBlog.author}`)
       setTimeout(() => {
-        setConfirm(null)
-      }, 5000)
+      setConfirm(null)
+    }, 5000)
+    })
+    
   }
 
+  const removeBlog = (blogObject) => {
+    if(window.confirm(`Are you sure you want to remove ${blogObject.title} by ${blogObject.author}`)) {
+      blogService
+      .deleteBlog(blogObject.id)
+      .then(deletedId => {
+        setBlogs(blogs.filter(blog => deletedId !== blog.id))
+      })
+      window.location.reload(false);
+    }
+  }
   const loginForm = () => (
     <form onSubmit={handleLogin}>
       <div>
@@ -120,6 +122,20 @@ const App = () => {
       <button type="submit">login</button>
     </form>
   )
+
+  const addLikes = (blogObject) => {
+    blogService
+    .like(blogObject)
+    .then(updatedBlog => {
+      setBlogs(blogs.map(blog =>
+        updatedBlog.id === blog.id ?
+        updatedBlog :
+        blog
+      ))
+    })
+  }
+
+  const blogFormRef = useRef()
   const blogForm = () => (
     <div>
       <p>
@@ -131,43 +147,23 @@ const App = () => {
           logout
         </button>
       </p>
-      <h1>
-        create new
-      </h1>
-      <form onSubmit = {addBlog}>
-        <div>
-          title:
-          <input
-            type="text"
-            value={title}
-            name="Title"
-            onChange={({ target }) => setTitle(target.value)}
-          />
-        </div>
-        <div>
-          author:
-          <input
-            type="text"
-            value={author}
-            name="Author"
-            onChange={({ target }) => setAuthor(target.value)}
-          />
-        </div>
-        <div>
-          url:
-          <input
-            type="text"
-            value={url}
-            name="url"
-            onChange={({ target }) => setUrl(target.value)}
-          />
-        </div>
-        <button type="submit">add blog</button>
-      </form>
-
-      {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
-      )}
+      <Togglable buttonLabel = 'new blog' ref={blogFormRef}> 
+        <BlogForm createBlog={addBlog} />
+      </Togglable>
+      <button onClick={() => {
+          order === ('least likes')  ?
+          setOrder('most likes') :
+          setOrder('least likes')
+        }}>
+        {`Currently sorting blogs by ${order}`}
+      </button>
+      {
+        order === 'least likes' ?
+        blogs.sort((a, b) => a.likes-b.likes).map(blog =>
+        <Blog key={blog.id} blog={blog} username={user.username} addLikes = {addLikes} removeBlog = {removeBlog}/>) :
+        blogs.sort((a, b) => b.likes-a.likes).map(blog =>
+        <Blog key={blog.id} blog={blog} username={user.username} addLikes = {addLikes} removeBlog = {removeBlog}/>)
+      }
     </div>
   )
 
