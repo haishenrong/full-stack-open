@@ -1,7 +1,7 @@
-import React, {useState} from 'react'
+import React, { useState } from 'react'
 //import blogService from '../services/blogs'
 
-const Blog = ({blog, username, addLikes, removeBlog}) => {
+const Blog = ({ blog, username, addLikes, removeBlog }) => {
   const [isDisplayed, setIsDisplayed] = useState(false)
 
   const handleDisplayChange = (event) => {
@@ -18,7 +18,7 @@ const Blog = ({blog, username, addLikes, removeBlog}) => {
     }
     addLikes(updatedBlog)
   }
-  
+
   const blogStyle = {
     color: 'rgb(0, 92, 128)',
     //background: 'lightseagreen',
@@ -29,49 +29,48 @@ const Blog = ({blog, username, addLikes, removeBlog}) => {
     marginBottom: 5
   }
   console.log(username)
-  console.log(blog.user.username)
   return (
     <div style = {blogStyle}>
-      <div>
-        {blog.title}         
+      <div className='title'>
+        {blog.title}
         <button onClick={handleDisplayChange}>
           {
-            isDisplayed 
-            ? 'hide'
-            : 'view'
+            isDisplayed
+              ? 'hide'
+              : 'view'
           }
         </button>
       </div>
       {isDisplayed ?
-      <div>
         <div>
-          {blog.url}
-        </div> 
-        <div>
-          {`Likes: ${blog.likes}`}
-          <button onClick={incrementLikes}>
+          <div className = 'url'>
+            {blog.url}
+          </div>
+          <div className = 'likes'>
+            {`Likes: ${blog.likes}`}
+            <button onClick={incrementLikes}>
           like
-        </button>   
-        </div>
-        <div>
-          {`Author: ${blog.author}`}
-        </div>
-      </div> :
-      <div>
-      </div>}
-      {
-      username === blog.user.username && isDisplayed?
-        <div>
-          <button onClick={() => {
-            removeBlog(blog)
-          }}>
-            remove blog
-          </button>
+            </button>
+          </div>
+          <div className = 'author'>
+            {`Author: ${blog.author}`}
+          </div>
         </div> :
-        ''
+        <div>
+        </div>}
+      {
+        username === blog.user.username && isDisplayed?
+          <div>
+            <button onClick={() => {
+              removeBlog(blog)
+            }}>
+            remove blog
+            </button>
+          </div> :
+          ''
       }
-      
-    </div>     
+
+    </div>
   )
 }
 
