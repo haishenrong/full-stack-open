@@ -33,7 +33,7 @@ const Blog = ({ blog, username, addLikes, removeBlog }) => {
     <div style = {blogStyle}>
       <div className='title'>
         {blog.title}
-        <button onClick={handleDisplayChange}>
+        <button id = 'view-blog' onClick={handleDisplayChange}>
           {
             isDisplayed
               ? 'hide'
@@ -48,7 +48,7 @@ const Blog = ({ blog, username, addLikes, removeBlog }) => {
           </div>
           <div className = 'likes'>
             {`Likes: ${blog.likes}`}
-            <button onClick={incrementLikes}>
+            <button id = 'increment-likes' onClick={incrementLikes}>
           like
             </button>
           </div>
@@ -61,7 +61,7 @@ const Blog = ({ blog, username, addLikes, removeBlog }) => {
       {
         username === blog.user.username && isDisplayed?
           <div>
-            <button onClick={() => {
+            <button id = 'remove-blog' onClick={() => {
               removeBlog(blog)
             }}>
             remove blog
