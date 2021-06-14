@@ -29,9 +29,9 @@ Content-Type: application/json
 
 {
     "notes": [],
-    "username": "rooter",
+    "username": "roots",
     "name": "SuperusertheBob",
-    "password": "salainen"
+    "password": "trees"
 }
 
 ###

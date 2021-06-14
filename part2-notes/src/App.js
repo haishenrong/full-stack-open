@@ -124,9 +124,8 @@ const App = () => {
     <div>
       <h1>Notes</h1>
       <Notification message={errorMessage} />
-
       {user === null ?
-        <Togglable buttonLabel='login'>
+        <Togglable buttonLabel='log in'>
           <LoginForm
             username={username}
             password={password}
@@ -136,7 +135,7 @@ const App = () => {
           />
         </Togglable> :
         <div>
-          <p>{user.name} logged-in</p>
+          <p>{user.name} logged in</p>
           {noteForm()}
         </div>
 
