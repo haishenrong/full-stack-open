@@ -75,9 +75,7 @@ const App = () => {
     </Togglable>
   )
 
-  window.localStorage.setItem(
-    'loggedNoteappUser', JSON.stringify(user)
-  )
+
   const handleLogin = async (event) => {
     event.preventDefault()
     try {
@@ -85,6 +83,9 @@ const App = () => {
         username, password,
       })
       noteService.setToken(user.token)
+      window.localStorage.setItem(
+        'loggedNoteappUser', JSON.stringify(user)
+      )
       setUser(user)
       setUsername('')
       setPassword('')

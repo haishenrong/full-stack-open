@@ -24,20 +24,20 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 Cypress.Commands.add('login', ({ username, password }) => {
-  cy.request('POST', 'http://localhost:3001/api/login', {
-    username, password
-  }).then(({ body }) => {
-    window.localStorage.setItem('loggedNoteappUser', JSON.stringify(body))
-    cy.visit('http://localhost:3000')
-  })/*
-  cy.contains('log in').click()
-  cy.get('#username').type(username)
-  cy.get('#password').type(password)
-  cy.get('#login-button').click()*/
+  cy.request({
+    method: 'POST',
+    url: 'http://localhost:3001/api/login',
+    body: {
+      username: username,
+      password: password
+    } })
+    .then((resp) => {
+      localStorage.setItem('loggedNoteappUser', JSON.stringify(resp.body))
+      cy.visit('http://localhost:3000')
+    })
 })
 
 Cypress.Commands.add('createNote', ({ content, important }) => {
-  console.log(JSON.parse(localStorage.getItem('loggedNoteappUser')))
   cy.request({
     url: 'http://localhost:3001/api/notes',
     method: 'POST',
@@ -46,6 +46,5 @@ Cypress.Commands.add('createNote', ({ content, important }) => {
       'Authorization': `bearer ${JSON.parse(window.localStorage.getItem('loggedNoteappUser')).token}`
     }
   })
-
   cy.visit('http://localhost:3000')
 })
