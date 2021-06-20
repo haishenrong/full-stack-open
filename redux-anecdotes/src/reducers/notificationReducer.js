@@ -1,9 +1,7 @@
 const notificationReducer = (state = '', action) => {
   switch(action.type) {
-    case 'CREATE':
-      return 'Created a new anecdote '+action.data
-    case 'LIKES':
-      return 'You voted for ' + action.data
+    case 'SET':
+      return action.data
     case 'CLEAR':
       return ''
     default:
@@ -11,24 +9,18 @@ const notificationReducer = (state = '', action) => {
   }
 }
 
-export const createdAnecdote = (content) => {
-  return {
-    type: 'CREATE',
+export const setNotification = (content, time) => {
+  return async dispatch => {
+    console.log(time)
+    dispatch({
+    type: 'SET',
     data: content
+    })
+    setTimeout(() => {
+      dispatch({
+        type: 'CLEAR'
+      })
+    }, time*1000)
   }
 }
-
-export const votedFor = (content) => {
-  return {
-    type: 'LIKES',
-    data: content
-  }
-}
-
-export const clear = () => {
-    return {
-      type: 'CLEAR'
-    }
-  }
-
 export default notificationReducer
