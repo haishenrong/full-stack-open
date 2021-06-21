@@ -8,15 +8,15 @@ const notificationReducer = (state = '', action) => {
       return state
   }
 }
-
+let timeOut = setTimeout(function() {}, 1)
 export const setNotification = (content, time) => {
   return async dispatch => {
-    console.log(time)
+    clearTimeout(timeOut)
     dispatch({
     type: 'SET',
     data: content
     })
-    setTimeout(() => {
+    timeOut = setTimeout(() => {
       dispatch({
         type: 'CLEAR'
       })
