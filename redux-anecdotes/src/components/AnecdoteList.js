@@ -3,10 +3,6 @@ import { voteInFavor } from '../reducers/anecdoteReducer'
 import { setNotification} from '../reducers/notificationReducer'
 
 const AnecdoteList = (props) => {
-  //const anecdotes = useSelector(state => state.anecdotes)
-  //const filter = useSelector(state => state.filter)
-  //const dispatch = useDispatch()
-
 
   const vote = async (id, content) => {
     props.voteInFavor(id)
