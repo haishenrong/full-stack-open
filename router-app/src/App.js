@@ -2,6 +2,10 @@ import Notes from './components/Notes'
 import Users from './components/Users'
 import Home from './components/Home'
 import { useState } from 'react'
+import { Form, Button, Navbar, Nav } from 'react-bootstrap'
+import Container from '@material-ui/core/Container'
+import { TextField, AppBar, Toolbar, IconButton } from '@material-ui/core'
+import { Alert } from '@material-ui/lab'
 
 import {
   BrowserRouter as Router,
@@ -32,12 +36,16 @@ const Login = (props) => {
       <h2>login</h2>
       <form onSubmit={onSubmit}>
         <div>
-          username: <input />
+          <TextField label="username" />
         </div>
         <div>
-          password: <input type='password' />
+          <TextField  label="password" type='password' />
         </div>
-        <button type="submit">login</button>
+        <div>
+          <Button variant="contained" color="primary" type="submit">
+            login
+          </Button>
+        </div>
       </form>
     </div>
   )
@@ -57,6 +65,7 @@ const App = () => {
       id: 2
     }
   ])
+  const [message, setMessage] = useState(null)
 
   const match = useRouteMatch('/notes/:id')
   const note = match 
@@ -65,6 +74,10 @@ const App = () => {
   
   const login = (user) => {
     setUser(user)
+    setMessage(`welcome ${user}`)
+    setTimeout(() => {
+      setMessage(null)
+    }, 10000)
   }
 
   const padding = {
@@ -72,17 +85,32 @@ const App = () => {
   }
 
   return (
-    <div>
+    <Container>
+    {(message &&
+    <Alert variant="success">
+      {message}
+    </Alert>
+    )}
     <Router>
-      <div>
-        <Link style={padding} to="/">home</Link>
-        <Link style={padding} to="/notes">notes</Link>
-        <Link style={padding} to="/users">users</Link>
-        {user
-          ? <em>{user} logged in</em>
-          : <Link style={padding} to="/login">login</Link>
-        }
-      </div>
+    <AppBar position="static">
+  <Toolbar>
+    <Button color="inherit" component={Link} to="/">
+      home
+    </Button>
+    <Button color="inherit" component={Link} to="/notes">
+      notes
+    </Button>
+    <Button color="inherit" component={Link} to="/users">
+      users
+    </Button>   
+    {user
+      ? <em>{user} logged in</em>
+      : <Button color="inherit" component={Link} to="/login">
+          login
+        </Button>
+    }                              
+  </Toolbar>
+</AppBar>
 
       <Switch>
         <Route path="/notes/:id">
@@ -105,7 +133,7 @@ const App = () => {
       <div>
         <i>Note app, Department of Computer Science 2021</i>
       </div>
-    </div>
+    </Container>
   )
 }
 
