@@ -1,32 +1,20 @@
-import React, { useState } from 'react'
-import PropTypes from 'prop-types'
+import React from 'react'
 
-const BlogForm = ({ createBlog }) => {
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
+import { connect } from 'react-redux'
+import { createBlog } from '../reducers/blogReducer'
+import { setNotification } from '../reducers/notificationReducer'
 
-  const handleTitleChange = (event) => {
-    setTitle(event.target.value)
-  }
-  const handleAuthorChange = (event) => {
-    setAuthor(event.target.value)
-  }
-  const handleUrlChange = (event) => {
-    setUrl(event.target.value)
-  }
+const BlogForm = (props) => {
 
-  const addBlog = (event) => {
+  const addBlog = async (event) => {
     event.preventDefault()
-    createBlog({
-      title: title,
-      author: author,
-      url: url
+    props.createBlog({
+      title: event.target.title.value,
+      author: event.target.author.value,
+      url: event.target.url.value,
+      likes: 0
     })
-
-    setTitle('')
-    setAuthor('')
-    setUrl('')
+    props.setNotification(`you created ${event.target.title.value}`, 5)
   }
 
   return (
@@ -40,9 +28,7 @@ const BlogForm = ({ createBlog }) => {
           <input
             type="text"
             id='title'
-            value={title}
-            name="Title"
-            onChange={handleTitleChange}
+            name="title"
           />
         </div>
         <div>
@@ -50,9 +36,7 @@ const BlogForm = ({ createBlog }) => {
           <input
             type="text"
             id='author'
-            value={author}
-            name="Author"
-            onChange={handleAuthorChange}
+            name="author"
           />
         </div>
         <div>
@@ -60,9 +44,7 @@ const BlogForm = ({ createBlog }) => {
           <input
             type="text"
             id='url'
-            value={url}
             name="url"
-            onChange={handleUrlChange}
           />
         </div>
         <button id='add-blog' type="submit">add blog</button>
@@ -71,7 +53,14 @@ const BlogForm = ({ createBlog }) => {
   )
 }
 
-BlogForm.propTypes = {
-  createBlog: PropTypes.func.isRequired
+const mapDispatchToProps = {
+  createBlog,
+  setNotification
 }
-export default BlogForm
+
+const ConnectedBlogForm = connect(
+  null,
+  mapDispatchToProps
+)(BlogForm)
+
+export default ConnectedBlogForm

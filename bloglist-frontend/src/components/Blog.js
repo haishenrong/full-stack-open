@@ -1,22 +1,18 @@
+import { connect } from 'react-redux'
+import { likeBlog, deleteBlog } from '../reducers/blogReducer'
+import { setNotification } from '../reducers/notificationReducer'
 import React, { useState } from 'react'
-//import blogService from '../services/blogs'
 
-const Blog = ({ blog, username, addLikes, removeBlog }) => {
+const Blog = (props) => {
   const [isDisplayed, setIsDisplayed] = useState(false)
 
   const handleDisplayChange = (event) => {
     setIsDisplayed(!isDisplayed)
   }
 
-  const incrementLikes = (event) => {
-    const updatedBlog = {
-      title: blog.title,
-      author: blog.author,
-      likes: blog.likes+1,
-      url: blog.url,
-      id: blog.id
-    }
-    addLikes(updatedBlog)
+  const incrementLikes = async (id, title) => {
+    props.likeBlog(id)
+    props.setNotification(`you voted ${title}`,5)
   }
 
   const blogStyle = {
@@ -28,50 +24,74 @@ const Blog = ({ blog, username, addLikes, removeBlog }) => {
     borderWidth: 1,
     marginBottom: 5
   }
-  console.log(username)
-  return (
-    <div style = {blogStyle}>
-      <div className='title'>
-        {blog.title}
-        <button id = 'view-blog' onClick={handleDisplayChange}>
-          {
-            isDisplayed
-              ? 'hide'
-              : 'view'
-          }
-        </button>
-      </div>
-      {isDisplayed ?
-        <div>
-          <div className = 'url'>
-            {blog.url}
-          </div>
-          <div className = 'likes'>
-            {`Likes: ${blog.likes}`}
-            <button id = 'increment-likes' onClick={incrementLikes}>
-          like
-            </button>
-          </div>
-          <div className = 'author'>
-            {`Author: ${blog.author}`}
-          </div>
-        </div> :
-        <div>
-        </div>}
-      {
-        username === blog.user.username && isDisplayed?
-          <div>
-            <button id = 'remove-blog' onClick={() => {
-              removeBlog(blog)
-            }}>
-            remove blog
-            </button>
-          </div> :
-          ''
-      }
 
+  return (
+    <div>
+      {
+        props.blogs.map(blog =>
+          <div style = {blogStyle} key={blog.id}>
+            <div className='title'>
+              {blog.title}
+              <button id = 'view-blog' onClick={handleDisplayChange}>
+                {
+                  isDisplayed
+                    ? 'hide'
+                    : 'view'
+                }
+              </button>
+            </div>
+            {isDisplayed ?
+              <div>
+                <div className = 'url'>
+                  {blog.url}
+                </div>
+                <div className = 'likes'>
+                  {`Likes: ${blog.likes}`}
+                  <button id = 'increment-likes' onClick={() => {
+                    incrementLikes(blog.id, blog.title)
+                  }}>
+                  like
+                  </button>
+                </div>
+                <div className = 'author'>
+                  {`Author: ${blog.author}`}
+                </div>
+              </div> :
+              <div>
+              </div>}
+            {
+              props.username === blog.user.username && isDisplayed?
+                <div>
+                  <button id = 'remove-blog' onClick={() => {
+                    props.deleteBlog(blog.id)
+                    props.setNotification(`${blog.title} has been deleted`,5)
+                  }}>
+                  remove blog
+                  </button>
+                </div> :
+                ''
+            }
+          </div>
+        )}
     </div>
   )
 }
 
-export default Blog
+const mapStateToProps = (state) => {
+  return{
+    blogs: state.blogs
+  }
+}
+
+const mapDispatchToProps = {
+  likeBlog,
+  deleteBlog,
+  setNotification
+}
+const ConnectedBlog = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Blog)
+
+
+export default ConnectedBlog

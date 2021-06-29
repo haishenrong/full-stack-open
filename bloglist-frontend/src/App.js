@@ -1,44 +1,22 @@
 import React, { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
+import Notification from './components/Notification'
 import loginService from './services/login'
 import blogService from './services/blogs'
 import Togglable from './components/Togglable'
 import BlogForm from './components/BlogForm'
-
-const Notification = ({ confirm, message }) => {
-  if (confirm === null && message === null) {
-    return null
-  }
-  if(confirm === null) {
-    return (
-      <div className="error">
-        {message}
-      </div>
-    )
-  }
-  else {
-    return (
-      <div className="notif">
-        {confirm}
-      </div>
-    )
-  }
-}
+import { initializeBlogs } from './reducers/blogReducer'
+import { useDispatch } from 'react-redux'
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
-  const [errorMessage, setErrorMessage] = useState(null)
-  const [confirm, setConfirm] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
   const [order, setOrder] = useState('most likes')
-
+  const dispatch = useDispatch()
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs( blogs )
-    )
-  }, [])
+    dispatch(initializeBlogs())
+  }, [dispatch])
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
@@ -62,43 +40,20 @@ const App = () => {
       setUser(user)
       setUsername('')
       setPassword('')
-      setConfirm('Login Sucessful')
+      //setConfirm('Login Sucessful')
       setTimeout(() => {
-        setConfirm(null)
+        //setConfirm(null)
       }, 5000)
     } catch (exception) {
       console.log('login error')
-      setErrorMessage('Wrong credentials')
+      //setErrorMessage('Wrong credentials')
       setTimeout(() => {
-        setErrorMessage(null)
+        //setErrorMessage(null)
       }, 5000)
     }
   }
 
-  const addBlog = (blogObject) => {
-    blogFormRef.current.toggleVisibility()
-    blogService
-      .create(blogObject)
-      .then(nextBlog => {
-        setBlogs(blogs.concat(nextBlog))
-        setConfirm(`a new blog ${nextBlog.title} by ${nextBlog.author}`)
-        setTimeout(() => {
-          setConfirm(null)
-        }, 5000)
-      })
 
-  }
-
-  const removeBlog = (blogObject) => {
-    if(window.confirm(`Are you sure you want to remove ${blogObject.title} by ${blogObject.author}`)) {
-      blogService
-        .deleteBlog(blogObject.id)
-        .then(deletedId => {
-          setBlogs(blogs.filter(blog => deletedId !== blog.id))
-        })
-      window.location.reload(false)
-    }
-  }
   const loginForm = () => (
     <form onSubmit={handleLogin}>
       <div>
@@ -124,19 +79,6 @@ const App = () => {
       <button id="login-button" type="submit">login</button>
     </form>
   )
-
-  const addLikes = (blogObject) => {
-    blogService
-      .like(blogObject)
-      .then(updatedBlog => {
-        setBlogs(blogs.map(blog =>
-          updatedBlog.id === blog.id ?
-            updatedBlog :
-            blog
-        ))
-      })
-  }
-
   const blogFormRef = useRef()
   const blogForm = () => (
     <div>
@@ -150,31 +92,16 @@ const App = () => {
         </button>
       </p>
       <Togglable buttonLabel = 'new blog' ref={blogFormRef}>
-        <BlogForm createBlog={addBlog} />
+        <BlogForm />
       </Togglable>
-      <button id = 'sort-blogs' onClick={() => {
-        order === ('least likes')  ?
-          setOrder('most likes') :
-          setOrder('least likes')
-      }}>
-        {`Currently sorting blogs by ${order}`}
-      </button>
-      {
-        order === 'least likes' ?
-          blogs.sort((a, b) => a.likes-b.likes).map(blog =>
-            <Blog key={blog.id} blog={blog} username={user.username} addLikes = {addLikes} removeBlog = {removeBlog}/>) :
-          blogs.sort((a, b) => b.likes-a.likes).map(blog =>
-            <Blog key={blog.id} blog={blog} username={user.username} addLikes = {addLikes} removeBlog = {removeBlog}/>)
-      }
+      <Blog />
     </div>
   )
 
   return (
     <div>
       <h1>Blogs</h1>
-      <Notification
-        confirm = {confirm}
-        message = {errorMessage} />
+      <Notification />
       {
         user === null ?
           loginForm() :

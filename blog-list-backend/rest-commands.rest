@@ -1,9 +1,8 @@
-GET http://localhost:3003/api/blogs/
-
+GET http://localhost:3003/api/blogs/60da5726b2ff403b5017311b
 ###
 POST http://localhost:3003/api/blogs/
 Content-Type: application/json
-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvb3QiLCJpZCI6IjYwYjk3MzczMmQxNWM3MzdmYzFhOWI4NSIsImlhdCI6MTYyMjgzODMzNiwiZXhwIjoxNjIyODQxOTM2fQ.GDACNmo05kMZ2fgTFN8TdjhM6k930Q4CCQmkfJ-J55Y
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvb3QiLCJpZCI6IjYwYjk3MzczMmQxNWM3MzdmYzFhOWI4NSIsImlhdCI6MTYyNDkyMTg3NCwiZXhwIjoxNjI0OTI1NDc0fQ.7p6dLVA3k09c-2Wjqybz_PnzE_VbZofoYpLBfdcfeb8
 
 {
     "title": "Fifth Blog",
@@ -24,8 +23,8 @@ Content-Type: application/json
 }
 
 ###
-DELETE http://localhost:3003/api/blogs/60ac10ddc78d3bc6b999632d
-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvb3QiLCJpZCI6IjYwYjk3MzczMmQxNWM3MzdmYzFhOWI4NSIsImlhdCI6MTYyMjgzODMzNiwiZXhwIjoxNjIyODQxOTM2fQ.GDACNmo05kMZ2fgTFN8TdjhM6k930Q4CCQmkfJ-J55Y
+DELETE http://localhost:3003/api/blogs/60b97a4826faca360cee26ec
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvb3QiLCJpZCI6IjYwYjk3MzczMmQxNWM3MzdmYzFhOWI4NSIsImlhdCI6MTYyNDkyMTg3NCwiZXhwIjoxNjI0OTI1NDc0fQ.7p6dLVA3k09c-2Wjqybz_PnzE_VbZofoYpLBfdcfeb8
 ###
 
 GET http://localhost:3003/api/users/
