@@ -5,7 +5,6 @@ import React, { useState } from 'react'
 
 const Blog = (props) => {
   const [isDisplayed, setIsDisplayed] = useState(false)
-
   const handleDisplayChange = (event) => {
     setIsDisplayed(!isDisplayed)
   }
@@ -79,7 +78,8 @@ const Blog = (props) => {
 
 const mapStateToProps = (state) => {
   return{
-    blogs: state.blogs
+    blogs: state.blogs,
+    username: state.username
   }
 }
 

@@ -6,13 +6,15 @@ import blogService from './services/blogs'
 import Togglable from './components/Togglable'
 import BlogForm from './components/BlogForm'
 import { initializeBlogs } from './reducers/blogReducer'
+import { setCurrentUser } from './reducers/usernameReducer'
+import { setNotification } from './reducers/notificationReducer'
 import { useDispatch } from 'react-redux'
 
 const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [order, setOrder] = useState('most likes')
+  //const [order, setOrder] = useState('most likes')
   const dispatch = useDispatch()
   useEffect(() => {
     dispatch(initializeBlogs())
@@ -37,19 +39,15 @@ const App = () => {
         'loggedBlogappUser', JSON.stringify(user)
       )
       blogService.setToken(user.token)
+      setCurrentUser(username)
       setUser(user)
       setUsername('')
       setPassword('')
-      //setConfirm('Login Sucessful')
-      setTimeout(() => {
-        //setConfirm(null)
-      }, 5000)
+      setCurrentUser(username)
+      dispatch(setNotification('Login Sucessful',5))
     } catch (exception) {
       console.log('login error')
-      //setErrorMessage('Wrong credentials')
-      setTimeout(() => {
-        //setErrorMessage(null)
-      }, 5000)
+      dispatch(setNotification('Wrong credentials',5))
     }
   }
 
@@ -80,23 +78,26 @@ const App = () => {
     </form>
   )
   const blogFormRef = useRef()
-  const blogForm = () => (
-    <div>
-      <p>
-        {user.name} logged in
-        <button id='logout' onClick={() => {
-          setUser(null)
-          window.localStorage.removeItem('loggedBlogappUser')
-        }}>
+  const blogForm = () => {
+    dispatch(setCurrentUser(user.username))
+    return(
+      <div>
+        <p>
+          {user.name} logged in
+          <button id='logout' onClick={() => {
+            setUser(null)
+            window.localStorage.removeItem('loggedBlogappUser')
+          }}>
           logout
-        </button>
-      </p>
-      <Togglable buttonLabel = 'new blog' ref={blogFormRef}>
-        <BlogForm />
-      </Togglable>
-      <Blog />
-    </div>
-  )
+          </button>
+        </p>
+        <Togglable buttonLabel = 'new blog' ref={blogFormRef}>
+          <BlogForm />
+        </Togglable>
+        <Blog />
+      </div>
+    )
+  }
 
   return (
     <div>

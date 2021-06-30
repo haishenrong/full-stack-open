@@ -1,27 +1,28 @@
-const notificationReducer = (state = '', action) => {
+const usernameReducer = (state = '', action) => {
   switch(action.type) {
-  case 'SET':
+  case 'LOGIN':
     return action.data
-  case 'CLEAR':
+  case 'LOGOUT':
     return ''
   default:
     return state
   }
 }
 
-let timeOut = setTimeout(function() {}, 1)
-export const setNotification = (content, time) => {
+export const setCurrentUser = (content) => {
   return async dispatch => {
-    clearTimeout(timeOut)
     dispatch({
-      type: 'SET',
+      type: 'LOGIN',
       data: content
     })
-    timeOut = setTimeout(() => {
-      dispatch({
-        type: 'CLEAR'
-      })
-    }, time*1000)
   }
 }
-export default notificationReducer
+
+export const clearCurrentUser = () => {
+  return async dispatch => {
+    dispatch({
+      type: 'LOGOUT'
+    })
+  }
+}
+export default usernameReducer
