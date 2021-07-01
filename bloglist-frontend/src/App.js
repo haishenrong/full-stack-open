@@ -1,23 +1,45 @@
 import React, { useState, useEffect, useRef } from 'react'
-import Blog from './components/Blog'
+import Blogs from './components/Blogs'
 import Notification from './components/Notification'
 import loginService from './services/login'
 import blogService from './services/blogs'
 import Togglable from './components/Togglable'
 import BlogForm from './components/BlogForm'
+import Users from './components/Users'
 import { initializeBlogs } from './reducers/blogReducer'
+import { initializeUsers } from './reducers/userReducer'
 import { setCurrentUser } from './reducers/usernameReducer'
 import { setNotification } from './reducers/notificationReducer'
 import { useDispatch } from 'react-redux'
+import {
+  BrowserRouter as Router,
+  Switch, Route, Link
+} from 'react-router-dom'
 
 const App = () => {
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  //const [order, setOrder] = useState('most likes')
+
+  const useField = (type) => {
+    const [value, setValue] = useState('')
+
+    const onChange = (event) => {
+      setValue(event.target.value)
+    }
+
+    return {
+      type,
+      value,
+      onChange
+    }
+  }
+
+  const username = useField('text')
+  const password = useField('text')
+
   const dispatch = useDispatch()
   useEffect(() => {
     dispatch(initializeBlogs())
+    dispatch(initializeUsers())
   }, [dispatch])
 
   useEffect(() => {
@@ -26,6 +48,7 @@ const App = () => {
       const user = JSON.parse(loggedUserJSON)
       setUser(user)
       blogService.setToken(user.token)
+      dispatch(setCurrentUser(user.username))
     }
   }, [])
 
@@ -41,8 +64,6 @@ const App = () => {
       blogService.setToken(user.token)
       setCurrentUser(username)
       setUser(user)
-      setUsername('')
-      setPassword('')
       setCurrentUser(username)
       dispatch(setNotification('Login Sucessful',5))
     } catch (exception) {
@@ -56,58 +77,69 @@ const App = () => {
     <form onSubmit={handleLogin}>
       <div>
         username:
-        <input
-          id='username'
-          type="text"
-          value={username}
-          name="Username"
-          onChange={({ target }) => setUsername(target.value)}
-        />
+        <input {...username} />
       </div>
       <div>
         password:
-        <input
-          id = 'password'
-          type="password"
-          value={password}
-          name="Password"
-          onChange={({ target }) => setPassword(target.value)}
-        />
+        <input {...password}/>
       </div>
       <button id="login-button" type="submit">login</button>
     </form>
   )
   const blogFormRef = useRef()
-  const blogForm = () => {
-    dispatch(setCurrentUser(user.username))
-    return(
-      <div>
-        <p>
-          {user.name} logged in
-          <button id='logout' onClick={() => {
-            setUser(null)
-            window.localStorage.removeItem('loggedBlogappUser')
-          }}>
-          logout
-          </button>
-        </p>
-        <Togglable buttonLabel = 'new blog' ref={blogFormRef}>
-          <BlogForm />
-        </Togglable>
-        <Blog />
-      </div>
-    )
+  const padding = {
+    padding: 5
   }
 
   return (
-    <div>
-      <h1>Blogs</h1>
-      <Notification />
-      {
-        user === null ?
-          loginForm() :
-          blogForm()
-      }
+    <div className="container">
+      <Router>
+        <div>
+          <Link style={padding} to="/">home</Link>
+          <Link style={padding} to="/blogs">blogs</Link>
+          <Link style={padding} to="/users">users</Link>
+          {user ?
+            <em>{user.name} logged in
+              <button id='logout' onClick={() => {
+                setUser(null)
+                window.localStorage.removeItem('loggedBlogappUser')
+              }}>
+            logout
+              </button>
+            </em>
+            : <Link style={padding} to="/login">login</Link>
+          }
+        </div>
+        <Notification />
+
+        <Switch>
+          <Route path="/blogs/:id">
+            <Blogs />
+          </Route>
+          <Route path="/blogs">
+            <Blogs />
+            <Togglable buttonLabel = 'new blog' ref={blogFormRef}>
+              <BlogForm />
+            </Togglable>
+          </Route>
+          <Route path="/users/:id">
+            <Users />
+          </Route>
+          <Route path="/users">
+            <Users />
+          </Route>
+          <Route path="/login">
+            {loginForm()}
+          </Route>
+          <Route path="/">
+            {'Loren ipsum'}
+          </Route>
+        </Switch>
+
+        <div>
+          <i>Bloglist app, Department of Computer Science 2021</i>
+        </div>
+      </Router>
     </div>
   )
 }

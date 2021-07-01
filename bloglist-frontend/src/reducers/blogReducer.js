@@ -7,11 +7,13 @@ const blogReducer = (state = [], action) => {
     const blogToChange = state.find(n => n.id === id)
     const changedBlog = {
       ...blogToChange,
-      votes: blogToChange.votes+1
+      likes: blogToChange.likes+1
     }
-    return state.map(blog =>
+    const newState = state.map(blog =>
       blog.id !== id ? blog : changedBlog
-    )}
+    )
+    return newState
+  }
   case 'ADD': {
     return [...state, action.data]
   }

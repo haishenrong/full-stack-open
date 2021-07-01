@@ -21,7 +21,7 @@ const createNew = async newObject => {
   return response.data
 }
 
-const like = async id => {
+const like = async (id) => {
   const urlId = `${baseUrl}/${id}`
   const object = await axios.get(urlId)
   const alteredObject = {
