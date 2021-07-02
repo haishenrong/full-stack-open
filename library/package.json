@@ -1,0 +1,19 @@
+{
+  "name": "library",
+  "version": "1.0.0",
+  "description": "library using graphQL",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "haishenrong"
+  },
+  "author": "Hai Shen Rong",
+  "license": "ISC",
+  "dependencies": {
+    "apollo-server": "^2.25.2",
+    "graphql": "^15.5.1"
+  }
+}
