@@ -1,7 +1,10 @@
 const { ApolloServer, UserInputError, gql } = require('apollo-server')
 const mongoose = require('mongoose')
 const Person = require('./models/person')
+const User = require('./models/user')
 const jwt = require('jsonwebtoken')
+const { PubSub } = require('apollo-server')
+const pubsub = new PubSub()
 
 const JWT_SECRET = 'NEED_HERE_A_SECRET_KEY'
 const MONGODB_URI = 'mongodb+srv://fullstack:fullstack@cluster0.br905.mongodb.net/gql-server?retryWrites=true&w=majority'
@@ -16,6 +19,8 @@ mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true,
     console.log('error connection to MongoDB:', error.message)
   })
 
+mongoose.set('debug', true);
+
 const typeDefs = gql`
   type Address {
     street: String!
@@ -26,6 +31,7 @@ const typeDefs = gql`
     name: String!
     phone: String
     address: Address!
+    friendOf: [User!]!
     id: ID!
   }
 
@@ -71,6 +77,10 @@ const typeDefs = gql`
     NO
   }
 
+  type Subscription {
+    personAdded: Person!
+  } 
+
   type Query {
     personCount: Int!
     allPersons(phone: YesNo): [Person!]!
@@ -84,10 +94,12 @@ const resolvers = {
     personCount: () => Person.collection.countDocuments(),
     allPersons: (root, args) => {
       if (!args.phone) {
-        return Person.find({})
+        console.log('Person.find_v1')
+        return Person.find({}).populate('friendOf')
       }
-  
+      console.log('Person.find_v2')
       return Person.find({ phone: { $exists: args.phone === 'YES'  }})
+        .populate('friendOf')
     },
     me: (root, args, context) => {
       return context.currentUser
@@ -119,7 +131,7 @@ const resolvers = {
           invalidArgs: args,
       })
     }
-
+    pubsub.publish('PERSON_ADDED', { personAdded: person })
     return person
     },
     editNumber: async (root, args) => {
@@ -135,6 +147,7 @@ const resolvers = {
       return person.save()
     },
     createUser: (root, args) => {
+      console.log(args.username)
       const user = new User({ username: args.username })
   
       return user.save()
@@ -175,6 +188,11 @@ const resolvers = {
   
       return currentUser
     }
+  },
+  Subscription: {
+    personAdded: {
+      subscribe: () => pubsub.asyncIterator(['PERSON_ADDED'])
+    },
   }
 }
 
@@ -193,6 +211,7 @@ const server = new ApolloServer({
   }
 })
 
-server.listen().then(({ url }) => {
+server.listen().then(({ url, subscriptionsUrl }) => {
   console.log(`Server ready at ${url}`)
+  console.log(`Subscriptions ready at ${subscriptionsUrl}`)
 })
