@@ -104,6 +104,7 @@ const resolvers = {
     addBook: async (root, args, context) => {
       const currentUser = context.currentUser
       if (!currentUser) {
+        console.log(currentUser)
         throw new AuthenticationError("not authenticated")
       }
       const authorToChange = await Author.findOne({name: args.author})
