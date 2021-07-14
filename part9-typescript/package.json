@@ -1,0 +1,20 @@
+{
+  "name": "part9-typescript",
+  "version": "1.0.0",
+  "description": "typescript tutorial",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "ts-node": "ts-node",
+    "multiply": "ts-node multiplier.ts",
+    "calculate": "ts-node calculator.ts"
+  },
+  "author": "Hai Shen Rong",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^16.3.2",
+    "ts-node": "^10.1.0",
+    "typescript": "^4.3.5"
+  },
+  "dependencies": {}
+}
