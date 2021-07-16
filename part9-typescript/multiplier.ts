@@ -1,3 +1,5 @@
+//import process = require('process');
+
 interface MultiplyValues {
   value1: number;
   value2: number;
