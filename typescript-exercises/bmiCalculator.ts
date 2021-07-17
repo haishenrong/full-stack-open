@@ -3,12 +3,17 @@ interface BMIValues {
     value2: number;
   }
 
+  export const relations = [
+    'Not healthy, put meat on bones',
+    'Normal (healthy weight)',
+    'Not healthy, remove meat from bones'
+  ]
 
-  const parseBMIArguments = (args: Array<string>): BMIValues => {
+const parseBMIArguments = (args: Array<string>): BMIValues => {
     if (args.length < 4) throw new Error('Not enough arguments');
     if (args.length > 4) throw new Error('Too many arguments');
   
-    if (!isNaN(Number(args[2])) && !isNaN(Number(args[3]))) {
+    if (!isNaN(Number(args[0])) && !isNaN(Number(args[1]))) {
       return {
         value1: Number(args[2]),
         value2: Number(args[3])
@@ -18,8 +23,8 @@ interface BMIValues {
     }
   }
 
-const bmi = (height: number, weight: number) => {
-    console.log(weight/(height*height)*10000);
+export const bmi = (height: number, weight: number): number => {
+    return weight/(height*height)*10000;
 }
 
 try {
