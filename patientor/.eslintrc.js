@@ -1,4 +1,4 @@
-{
+module.exports = {
   "extends": [
       "eslint:recommended",
       "plugin:@typescript-eslint/recommended",
@@ -30,8 +30,9 @@
   },
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
+    "sourceType": "module",
+    "tsconfigRootDir": __dirname,
     "project": "./tsconfig.json",
-    "tsconfigRootDir": "patientor",
-    "sourceType": "module"
-  }
-}
+  },
+  "ignorePatterns": [".eslintrc.js"]
+};
