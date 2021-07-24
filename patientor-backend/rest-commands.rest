@@ -1,0 +1,12 @@
+GET http://localhost:3001/api/patients
+###
+POST http://localhost:3001/api/patients
+Content-Type: application/json
+
+{
+    "name": "Herbert Walker",
+    "dateOfBirth": "1906-01-11",
+    "ssn": "432-56-3432",
+    "gender": "male",
+    "occupation": "Sleepwalker"
+}
